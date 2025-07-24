@@ -1,6 +1,6 @@
 import { Boxes } from "../components/ui/background-boxes";
 import { useNavigate } from "react-router-dom";
-import { cn } from "../lib/utils";
+
 import { Pawn } from "../symbols/Pawn";
 import { useRef, useState } from "react";
 import { Profile } from "../symbols/Profile";
