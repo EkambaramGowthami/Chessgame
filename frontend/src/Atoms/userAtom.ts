@@ -24,7 +24,7 @@ export const signinAtom = atom<signin_Type>({
         password:""
     }
 });
-export const authUserAtom = atom<user_Type>({
+export const authUserAtom = atom<user_Type | null>({
     key: "authUserAtom",
     default: null, 
   });
