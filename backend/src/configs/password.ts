@@ -8,7 +8,7 @@ passport.use(
     new GoogleStratagy({
         clientID:process.env.GOOGLE_CLIENT_ID!,
         clientSecret:process.env.GOOGLE_CLIENT_SECRET!,
-        callbackURL: "http://localhost:3000/auth/google/callback",
+        callbackURL: "https://chessgame-backend-3y0j.onrender.com/auth/google/callback",
     },
     async (accessToken,refreshToken,profile,done)=>{
         try{
