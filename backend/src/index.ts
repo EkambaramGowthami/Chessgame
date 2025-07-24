@@ -44,6 +44,7 @@ interface ServerToClientEvents {
     error : (msg:string)=>void;
 }
 const app=express();
+const PORT = process.env.PORT || 3000;
 app.use(
     cors({
       origin: "http://localhost:5173",
@@ -278,9 +279,9 @@ app.get("/",(req,res)=>{
  app.use(passport.initialize());
 app.use(passport.session());
 app.use("/auth",router);
- server.listen(3000,()=>{
-    console.log("server running on 3000 port");
- })
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(` Server running on port ${PORT}`);
+});
 
 
 
