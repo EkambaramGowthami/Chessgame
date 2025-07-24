@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import React from "react";
+
 
 import { Play } from './smallComponents/Play';
 import { ChessComponentAi } from './components/ChessComponentAi';

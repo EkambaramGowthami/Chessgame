@@ -1,21 +1,37 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Chessboard } from 'react-chessboard';
 import { Chess } from "chess.js";
 
-import { io, Socket } from "socket.io-client";
+import { io ,Socket} from "socket.io-client";
 import { Menu, Send } from 'lucide-react';
 
+type ChatMessage = {
+  senderId: string;
+  messageChat: string;
+  time?: string;
+};
+type RoomEventPayload = {
+  roomId: string;
+  color: "white" | "black";
+};
 
+type MoveEventPayload = {
+  move: { from: string; to: string; promotion?: string; color: "w" | "b" };
+  fen: string;
+  gameOver: boolean;
+  checkmate: boolean;
+  draw: boolean;
+};
 export const ChessComponent = () => {
   const sidebarRef = useRef(null);
   const [menu, setMenu] = useState(false);
   const [openRoom, setOpenRoom] = useState(false);
   const [positions, setPositions] = useState(false);
-  const [play, setPlay] = useState(false);
   const [chat, setChat] = useState(false);
 
   const [messageChat, setMessageChat] = useState("");
-  const [messages, setMessages] = useState([]);
+  
+const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [message, setMessage] = useState("");
   const [result, setResult] = useState("");
 
@@ -24,7 +40,7 @@ export const ChessComponent = () => {
   const dangerSound = useRef<HTMLAudioElement | null>(null);
   const [whiteMoves, setWhiteMove] = useState<string[]>([]);
   const [blackMoves, setBlackMove] = useState<string[]>([]);
-  const [socket] = useState(() => io("http://localhost:3000"));
+  const [socket] = useState<Socket>(() => io("http://localhost:3000"));
   const [roomId, setRoomId] = useState<string | null>(null);
   const [inputRoomId, setInputRoomId] = useState<string>("");
   const [color, setColor] = useState<"white" | "black" | null>(null);
@@ -71,13 +87,13 @@ export const ChessComponent = () => {
     return true;
   };
   useEffect(() => {
-    socket.on("roomCreated", ({ roomId, color }) => {
+    socket.on("roomCreated", ({ roomId, color }: RoomEventPayload) => {
       setRoomId(roomId);
       setColor(color);
       setStatus("Waiting for opponent to join...");
       setMyTurn(color === "white");
     });
-    socket.on("roomJoined", ({ roomId, color }) => {
+    socket.on("roomJoined", ({ roomId, color }: RoomEventPayload) => {
       setRoomId(roomId);
       setColor(color);
       setStatus("Joined the room. Game will start shortly.");
@@ -89,11 +105,11 @@ export const ChessComponent = () => {
       setChat(false);
 
     });
-    socket.on("receivedMessage", (newMessage) => {
+    socket.on("receivedMessage", (newMessage: ChatMessage) => {
       setMessages((prev) => [...prev, newMessage]);
     });
 
-    socket.on("moveMade", ({ move, fen, gameOver, checkmate, draw }) => {
+    socket.on("moveMade", ({ move, fen, gameOver, checkmate, draw }:MoveEventPayload) => {
       const result = chess.move(move);
       moveSoundRef.current?.play();
       setFen(fen);
@@ -150,7 +166,7 @@ export const ChessComponent = () => {
   }, []);
   useEffect(() => {
     successRef.current = new Audio("/sounds/success-340660.mp3");
-  })
+  }, []);
   const sendMessage = () => {
     if (messageChat.trim() === "") return;
     if (!roomId) {
@@ -183,7 +199,7 @@ export const ChessComponent = () => {
   }, []);
   useEffect(() => {
     const handleOutSideClick = (event: MouseEvent) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      if (sidebarRef.current && event.target instanceof Node && !sidebarRef.current.contains(event.target)){
         setMenu(false);
       }
     }

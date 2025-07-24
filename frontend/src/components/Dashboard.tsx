@@ -4,14 +4,15 @@ import { cn } from "../lib/utils";
 import { Pawn } from "../symbols/Pawn";
 import { useRef, useState } from "react";
 import { Profile } from "../symbols/Profile";
-import { useRecoilState } from "recoil";
-import { authUserAtom } from "../Atoms/userAtom";
+import { useRecoilValue } from "recoil";
+
 import { ProfilePage } from "./ProfilePage";
+import { authUserAtom } from "../Atoms/userAtom";
 
 
 export const Dashboard = () => {
     const navigate = useNavigate();
-    const [AuthUser, setAuthUser] = useRecoilState(authUserAtom);
+    const authUser = useRecoilValue(authUserAtom);
     const [profileClick, setProfileClick] = useState(false);
     const secondPageRef = useRef(null);
     const handleSignup = (e) => {
@@ -21,10 +22,7 @@ export const Dashboard = () => {
     const handleScrollSecondPage = () => {
         secondPageRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-    const handleSignout = () => {
-        setAuthUser(null);
-        alert("you are signed out");
-    }
+    
     return (
         <div className="bg-black text-white overflow-y-auto overflow-x-hidden">
             <div className="relative w-screen h-screen overflow-hidden bg-black flex flex-col items-center justify-center  ">
@@ -38,7 +36,7 @@ export const Dashboard = () => {
                         The8thRank
                     </div>
                     <nav className="flex justify-center items-center space-x-2 text-gray-500 mr-12 text-white">
-                        {AuthUser ? (
+                        {authUser ? (
                             <button className="bg-green-500 px-2 py-1 rounded-md text-sm" onClick={() => navigate("/chessgame")}>
                                 Go to Game
                             </button>
@@ -47,9 +45,8 @@ export const Dashboard = () => {
                                 Sign Up
                             </button>
                         )}
-                        <button className="t bg-green-500 px-2 py-1 rounded-md text-sm" onClick={handleSignout}>Sign Out</button>
                         <div onClick={() => setProfileClick(!profileClick)}><Profile w="w-8" h="8" /></div>
-                        {AuthUser && profileClick && (
+                        {authUser && profileClick && (
                             <div className="absolute right-4 top-20 w-48 h-48 text-white rounded-2xl shadow-lg z-50">
                                 <ProfilePage />
                             </div>
@@ -76,7 +73,7 @@ export const Dashboard = () => {
                 </div>
                 <div className="relative z-20 text-lg p-2 mt-2 w-fit rounded-xl mb-2 hover:bg-slate-900 bg-opacity-50 " onClick={handleScrollSecondPage}>Want to explore the legends of chess?</div>
             </div>
-            {/* second page */}
+           
             <div ref={secondPageRef} className="relative w-screen  min-h-screen bg-black flex flex-col p-12">
                 <h1 className="relative text-4xl font-bold text-center text-[#367c2b] mb-12">Top Chess Players in the world</h1>
                 {[

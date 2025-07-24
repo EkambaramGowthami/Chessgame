@@ -13,7 +13,9 @@ export const OAuthSuccess = () =>{
         // else{
         //     navigate("/dashboard");
         // }
-        navigate("/chessgame");
+        if (token) {
+            navigate("/Chessgame");
+          }
     },[]);
     return <div className="text-center text-2xl font-medium justify-center items-center">Loading......</div>
 }

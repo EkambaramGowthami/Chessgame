@@ -1,20 +1,20 @@
 import { Chess } from "chess.js";
-import { useEffect, useState,useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Chessboard } from "react-chessboard";
 import { useSearchParams } from "react-router-dom";
 
 export const ChessComponentAi = () => {
-  const [boardWidth,setBoardWidth] = useState(600);
+  const [boardWidth, setBoardWidth] = useState(600);
   const successRef = useRef<HTMLAudioElement | null>(null);
   const moveSoundRef = useRef<HTMLAudioElement | null>(null);
   const dangerSound = useRef<HTMLAudioElement | null>(null);
   const [whiteMove, setWhiteMove] = useState<string[]>([]);
-  const [blackMove, setBlackMove] = useState<string[]>([]);
+const [blackMove, setBlackMove] = useState<string[]>([]);
   const [searchParams] = useSearchParams();
-  const level = searchParams.get("level") || "newbie";
+  const level = (searchParams.get("level") as "newbie" | "beginner" | "advanced") || "newbie";
   const [chess] = useState(new Chess());
   const [fen, setFen] = useState("start");
-  const [playColor] = useState("white");
+  const [playColor] = useState<'white' | 'black'>('white');
   const [status, setStatus] = useState("");
   const makeAIMove = () => {
     if (chess.isGameOver()) return;
@@ -28,19 +28,20 @@ export const ChessComponentAi = () => {
       move = pickReasonableMove(chess);
     }
     else if (level === "advanced") {
-    
-      move = pickBestMove(chess,3);
+
+      move = pickBestMove(chess, 3);
     }
+    if (!move) return;
     const result = chess.move(move);
-    if(!result) return;
+    if (!result) return;
     setFen(chess.fen());
     setBlackMove(prev => [...prev, result.to]);
     moveSoundRef.current?.play();
-    
+
     if (chess.isGameOver()) {
       if (chess.isCheckmate()) {
         dangerSound.current?.play();
-       
+
         setStatus("Game Over! You lost. 🫣 AI wins.");
         successRef.current?.play();
       } else if (chess.isDraw()) {
@@ -55,7 +56,7 @@ export const ChessComponentAi = () => {
     }
 
   }
-  const onDrop = (sourceSquare: string, targetSquare: string) => {
+  const onDrop = (sourceSquare: string, targetSquare: string): boolean =>{
     const move = chess.move({
       from: sourceSquare,
       to: targetSquare,
@@ -67,7 +68,7 @@ export const ChessComponentAi = () => {
     setWhiteMove(prev => [...prev, move.to]);
     if (chess.isGameOver()) {
       if (chess.isCheckmate()) {
-        
+
         setStatus("Game Over! You win.");
         successRef.current?.play();
       } else if (chess.isDraw()) {
@@ -118,22 +119,22 @@ export const ChessComponentAi = () => {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen w-screen bg-[#0E0E10] overflow-hidden">
 
-    
+
 
       <div className="flex flex-col  lg:flex-row lg:justify-center  items-center w-screen min-h-screen text-white space-x-12 mt-0  bg-[#080808]">
 
         <div className="flex justify-center items-center flex-grow p-4">
           <div className="ml-12 flex justify-center items-center">
-          <Chessboard
-            position={fen}
-            onPieceDrop={onDrop}
-            boardOrientation={playColor}
-            boardWidth={boardWidth}
-            customDarkSquareStyle={{ backgroundColor: "#367c2b" }}
-            customLightSquareStyle={{ backgroundColor: "#ffffff" }}
-          /></div>
+            <Chessboard
+              position={fen}
+              onPieceDrop={onDrop}
+              boardOrientation={playColor}
+              boardWidth={boardWidth}
+              customDarkSquareStyle={{ backgroundColor: "#367c2b" }}
+              customLightSquareStyle={{ backgroundColor: "#ffffff" }}
+            /></div>
         </div>
-        
+
         <div className="md:mt-4 bg-[#0E0E10] overflow-hidden rounded-xl h-[480px]">
           <div className="z-16 text-white text-center text-md relative top-2 flex justify-center items-center space-x-8">
             <img src="/symbol/reshot-icon-animals-DS2ZNXRHCE (1).svg" className="w-12 h-12" />
@@ -168,36 +169,36 @@ export const ChessComponentAi = () => {
 
 
         </div>
-        {chess.isGameOver()==true && (
-      <div className="absolute top-1/2 left-1/2 bg-[#14ae5c] bg-opacity-90 transform -translate-x-1/2 -translate-y-1/2 px-6 py-6 flex flex-col justify-center items-center text-black text-lg font-semibold rounded-lg shadow-lg mb-12" p-6>
-     {chess.isCheckmate() ? (
-      <>
-        {chess.turn() === 'w' ? (
-          <>
-            <div className="text-2xl">🖤 AI Wins! 🏆</div>
-            <div className="italic text-sm text-gray-800">
-              "Every master was once a beginner. Keep going!" 💪
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="text-2xl">🤍 You Win! 🎉</div>
-            <div className="italic text-sm text-gray-800">
-              "Victory is sweetest when you've known defeat." ✨✨✨
-            </div>
-          </>
+        {chess.isGameOver() == true && (
+          <div className="absolute top-1/2 left-1/2 bg-[#14ae5c] bg-opacity-90 transform -translate-x-1/2 -translate-y-1/2 px-6 py-6 flex flex-col justify-center items-center text-black text-lg font-semibold rounded-lg shadow-lg mb-12" p-6>
+            {chess.isCheckmate() ? (
+              <>
+                {chess.turn() === 'w' ? (
+                  <>
+                    <div className="text-2xl">🖤 AI Wins! 🏆</div>
+                    <div className="italic text-sm text-gray-800">
+                      "Every master was once a beginner. Keep going!" 💪
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-2xl">🤍 You Win! 🎉</div>
+                    <div className="italic text-sm text-gray-800">
+                      "Victory is sweetest when you've known defeat." ✨✨✨
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="text-2xl">🤝 Draw!</div>
+                <div className="italic text-sm text-gray-800">
+                  "Sometimes, balance is the ultimate outcome." ⚖️
+                </div>
+              </>
+            )}
+          </div>
         )}
-      </>
-    ) : (
-      <>
-        <div className="text-2xl">🤝 Draw!</div>
-        <div className="italic text-sm text-gray-800">
-          "Sometimes, balance is the ultimate outcome." ⚖️
-        </div>
-      </>
-    )}
-  </div>
-    )}
 
 
 
@@ -307,7 +308,7 @@ function evaluateBoard(chess: Chess): number {
       const square = String.fromCharCode(97 + j) + (8 - i);
       if (centerSquares.has(square)) value += 10;
       if (['n', 'b'].includes(piece.type)) value += 5;
-      if (piece.type === 'k' && (i === 0 || i === 7) && (j === 6 || j === 2)) value += 30; 
+      if (piece.type === 'k' && (i === 0 || i === 7) && (j === 6 || j === 2)) value += 30;
 
       score += piece.color === 'w' ? value : -value;
     }
@@ -316,62 +317,62 @@ function evaluateBoard(chess: Chess): number {
   return score;
 }
 
-function minMax(chess:Chess,depth:number,alpha:number,beta:number,maximizingPlayer:boolean):number{
-  if(depth===0 || chess.isGameOver()){
-    if(chess.isCheckmate()) return maximizingPlayer ? -Infinity:Infinity;
-    if(chess.isStalemate() || chess.isDraw()) return 0;
+function minMax(chess: Chess, depth: number, alpha: number, beta: number, maximizingPlayer: boolean): number {
+  if (depth === 0 || chess.isGameOver()) {
+    if (chess.isCheckmate()) return maximizingPlayer ? -Infinity : Infinity;
+    if (chess.isStalemate() || chess.isDraw()) return 0;
     else return evaluateBoard(chess);
   }
-  const moves = chess.moves({verbose:true});
-  if(maximizingPlayer){
-    
+  const moves = chess.moves({ verbose: true });
+  if (maximizingPlayer) {
+
     let maxEval = -Infinity;
-    for(const move of moves){
-      const clone=new Chess(chess.fen());
-      clone.move(move);
-      const maxEvalScore=minMax(clone,depth-1,alpha,beta,false);
-      maxEval=Math.max(maxEval,maxEvalScore);
-      alpha=Math.max(alpha,maxEval);
-      if(beta<= alpha) break;
-  }
-  return maxEval;
-}
-  else {
-    let minEval=Infinity;
-    for(const move of moves){
+    for (const move of moves) {
       const clone = new Chess(chess.fen());
       clone.move(move);
-      const minEvalScore=minMax(clone,depth-1,alpha,beta,true);
-      minEval=Math.min(minEval,minEvalScore);
-      beta=Math.min(beta,minEvalScore);
-      if(beta <= alpha) break;
+      const maxEvalScore = minMax(clone, depth - 1, alpha, beta, false);
+      maxEval = Math.max(maxEval, maxEvalScore);
+      alpha = Math.max(alpha, maxEval);
+      if (beta <= alpha) break;
+    }
+    return maxEval;
+  }
+  else {
+    let minEval = Infinity;
+    for (const move of moves) {
+      const clone = new Chess(chess.fen());
+      clone.move(move);
+      const minEvalScore = minMax(clone, depth - 1, alpha, beta, true);
+      minEval = Math.min(minEval, minEvalScore);
+      beta = Math.min(beta, minEvalScore);
+      if (beta <= alpha) break;
 
     }
     return minEval;
   }
-  }
+}
 
 
 
-function pickBestMove(chess:Chess,depth:number){
-  const moves = chess.moves({verbose:true});
-  let bestScore= -Infinity;
-  let bestMoves :typeof moves = [];
-  for(const move of moves){
+function pickBestMove(chess: Chess, depth: number) {
+  const moves = chess.moves({ verbose: true });
+  let bestScore = -Infinity;
+  let bestMoves: typeof moves = [];
+  for (const move of moves) {
     const clone = new Chess(chess.fen());
     clone.move(move);
-    const score = minMax(clone,depth,-Infinity,Infinity,false);
-    if(score > bestScore){
-      bestScore=score;
-      bestMoves=[move];
+    const score = minMax(clone, depth, -Infinity, Infinity, false);
+    if (score > bestScore) {
+      bestScore = score;
+      bestMoves = [move];
     }
-    else if(score === bestScore){
+    else if (score === bestScore) {
       bestMoves.push(move);
     }
   }
   return bestMoves.length > 0 ?
-      (bestMoves[Math.floor(Math.random()*bestMoves.length)]) :
-      (moves[Math.floor(Math.random()*moves.length)]);
+    (bestMoves[Math.floor(Math.random() * bestMoves.length)]) :
+    (moves[Math.floor(Math.random() * moves.length)]);
 }
 
 

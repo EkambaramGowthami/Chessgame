@@ -1,44 +1,50 @@
-import { useRecoilValue } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { Profile } from "../symbols/Profile";
-import { authUserAtom } from "../Atoms/userAtom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { userAtom } from "../Atoms/userAtom";
 
-const  axiosInstance = axios.create({
-  baseURL:"http://localhost:3000",
-  withCredentials:true
+const axiosInstance = axios.create({
+  baseURL: "http://localhost:3000",
+  withCredentials: true,
 });
 
+type User = {
+  username: string;
+  email: string;
+};
+
 export const ProfilePage = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null); 
+  const setAuthUser = useSetRecoilState(userAtom); 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
     setError(null);
-    axiosInstance.get("api/profile")
-      .then(res => {
-        setUser(res.data.user); 
+    axiosInstance.get("/api/profile")
+      .then((res) => {
+        const userData = (res as any).data.user as User;
+        setUser(userData);
+        setAuthUser(userData);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error fetching profile:", err);
         setError("Failed to load profile. Please log in.");
+        setAuthUser(null);
         setLoading(false);
       });
   }, []);
 
   return (
     <div className="relative w-full bg-[#0d0d0d] text-white rounded-xl p-6 pt-12 shadow-3xl border border-[#1a1a1a] min-w-[12rem]">
-
       <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 z-20">
         <div className="rounded-full border-4 border-[#1f1f1f] p-1 bg-[#080808]">
-         
-          <Profile w="80" h="80" /> 
+          <Profile w="80" h="80" />
         </div>
       </div>
-
 
       <div className="text-center mt-6">
         {loading ? (
@@ -51,7 +57,7 @@ export const ProfilePage = () => {
             <p className="text-sm text-gray-400">{user.email}</p>
           </>
         ) : (
-             <p className="text-red-400 text-md mt-2">No user data available.</p>
+          <p className="text-red-400 text-md mt-2">No user data available.</p>
         )}
       </div>
     </div>
