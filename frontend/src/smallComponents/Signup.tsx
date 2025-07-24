@@ -17,8 +17,10 @@ type SigninType = {
 
 export const Signup = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useRecoilState<UserType>(userAtom);
-const [signinuser, setSigninUser] = useRecoilState<SigninType>(signinAtom);
+ const [user, setUser] = useRecoilState(userAtom);
+  const [signinUser, setSigninUser] = useRecoilState(signinAtom);
+  const [, setAuthUser] = useRecoilState(authUserAtom); // nullable
+
 
   const [login, setLogin] = useState(false);
 
@@ -61,8 +63,7 @@ const [signinuser, setSigninUser] = useRecoilState<SigninType>(signinAtom);
           withCredentials: true,
         }
       );
-      
-
+     setAuthUser(response.data.user);
       setUser({ username: "", email: "", password: "" });
       navigate("/chessgame");
 
@@ -86,7 +87,7 @@ const [signinuser, setSigninUser] = useRecoilState<SigninType>(signinAtom);
         }
       );
       const userData = (response.data as any).user;
-
+       setAuthUser(userData);
       if (userData) {
         navigate("/chessgame");
         console.log("You are signed in", userData);
