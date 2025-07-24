@@ -177,7 +177,7 @@ const handleSigninChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           <div
             className="w-full py-2 flex justify-center items-center rounded-2xl shadow-3xl hover:bg-[#353839] cursor-pointer"
             onClick={() => {
-              window.location.href = "http://localhost:3000/auth/google";
+              window.location.href = "https://chessgame-backend-3y0j.onrender.com/auth/google";
             }}
           >
             <span>
