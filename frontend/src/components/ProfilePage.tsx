@@ -12,6 +12,7 @@ const axiosInstance = axios.create({
 type User = {
   username: string;
   email: string;
+  password:string;
 };
 
 export const ProfilePage = () => {
