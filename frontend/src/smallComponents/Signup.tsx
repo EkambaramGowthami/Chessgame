@@ -3,7 +3,9 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { signinAtom, userAtom, authUserAtom } from "../Atoms/userAtom";
 import { useNavigate } from "react-router-dom";
-
+type SignupResponse = {
+  user: user_Type;
+};
 export const Signup = () => {
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userAtom);
@@ -41,30 +43,29 @@ const handleSigninChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 };
 
 
-  const handleCreateAccount = async () => {
-    try {
-      if (!user) return; 
-      const response = await axios.post(
-        "https://chessgame-backend-3y0j.onrender.com/signup",
-        {
-          username: user.username,
-          email: user.email,
-          password: user.password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      setAuthUser(response.data.user);
-      setUser({ username: "", email: "", password: "" });
-      navigate("/chessgame");
-      console.log("You are signed up", response.data);
-    } catch (error) {
-      const err = error as any;
-      console.log("Signup failed", err.response?.data || err.message);
-    }
-  };
-
+ const handleCreateAccount = async () => {
+  try {
+    if (!user) return;
+    const response = await axios.post<SignupResponse>(
+      "https://chessgame-backend-3y0j.onrender.com/signup",
+      {
+        username: user.username,
+        email: user.email,
+        password: user.password,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    setAuthUser(response.data.user); 
+    setUser({ username: "", email: "", password: "" });
+    navigate("/chessgame");
+    console.log("You are signed up", response.data);
+  } catch (error) {
+    const err = error as any;
+    console.log("Signup failed", err.response?.data || err.message);
+  }
+};
   const handleLogin = async () => {
     try {
       const response = await axios.post(
