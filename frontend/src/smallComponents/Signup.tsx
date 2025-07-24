@@ -4,16 +4,7 @@ import { useRecoilState } from "recoil";
 import { signinAtom, userAtom } from "../Atoms/userAtom"; 
 import { useNavigate } from "react-router-dom";
 
-type UserType = {
-  username: string;
-  email: string;
-  password: string;
-};
 
-type SigninType = {
-  userOremail: string;
-  password: string;
-};
 
 export const Signup = () => {
   const navigate = useNavigate();
