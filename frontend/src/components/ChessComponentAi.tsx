@@ -56,38 +56,40 @@ const [blackMove, setBlackMove] = useState<string[]>([]);
     }
 
   }
-  const onDrop = (sourceSquare: string, targetSquare: string): boolean =>{
-    const move = chess.move({
-      from: sourceSquare,
-      to: targetSquare,
-      promotion: "q",
-    });
-    if (move == null) return false;
-    setFen(chess.fen());
-    moveSoundRef.current?.play();
-    setWhiteMove(prev => [...prev, move.to]);
-    if (chess.isGameOver()) {
-      if (chess.isCheckmate()) {
+ const onDrop = (sourceSquare: string, targetSquare: string): boolean => {
+  const move = chess.move({
+    from: sourceSquare,
+    to: targetSquare,
+    promotion: "q",
+  });
 
-        setStatus("Game Over! You win.");
-        successRef.current?.play();
-      } else if (chess.isDraw()) {
-        setStatus("Game Over! It's a draw.");
-        successRef.current?.play();
-      } else {
-        setStatus("Game Over!");
-      }
+  if (move == null) return false;
+
+  setFen(chess.fen());
+  moveSoundRef.current?.play();
+  setWhiteMove(prev => [...prev, move.to]);
+
+  if (chess.isGameOver()) {
+    if (chess.isCheckmate()) {
+      setStatus("Game Over! You win.");
+      successRef.current?.play();
+    } else if (chess.isDraw()) {
+      setStatus("Game Over! It's a draw.");
+      successRef.current?.play();
     } else {
-      setStatus("AI is thinking...");
-      setTimeout(() => {
-        makeAIMove();
-      }, 100);
-      return true;
-
+      setStatus("Game Over!");
     }
 
-
+    return true; 
+  } else {
+    setStatus("AI is thinking...");
+    setTimeout(() => {
+      makeAIMove();
+    }, 100);
+    return true;
   }
+};
+
   useEffect(() => {
     const updateBoardSize = () => {
       const width = window.innerWidth;
