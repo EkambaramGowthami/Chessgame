@@ -17,22 +17,18 @@ type SigninType = {
 
 export const Signup = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useRecoilState<UserType | null>(userAtom);
-const [signinuser, setSigninUser] = useRecoilState<SigninType | null>(signinAtom);
+  const [user, setUser] = useRecoilState<UserType>(userAtom);
+const [signinuser, setSigninUser] = useRecoilState<SigninType>(signinAtom);
 
   const [login, setLogin] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
-  setUser((prev) => {
-    if (!prev) return { username: "", email: "", password: "", [name]: value };
-    return {
+    const { name, value } = e.target;
+    setUser((prev) => ({
       ...prev,
       [name]: value,
-    };
-  });
-};
-
+    }));
+  };
 
   useEffect(() => {
     axios
@@ -43,16 +39,13 @@ const [signinuser, setSigninUser] = useRecoilState<SigninType | null>(signinAtom
       );
   }, []);
 
- const handleSigninChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
-  setSigninUser((prev) => {
-    if (!prev) return { userOremail: "", password: "", [name]: value };
-    return {
+  const handleSigninChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSigninUser((prev) => ({
       ...prev,
       [name]: value,
-    };
-  });
-};
+    }));
+  };
 
 
   const handleCreateAccount = async () => {
