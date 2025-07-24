@@ -3,6 +3,11 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { signinAtom, userAtom, authUserAtom } from "../Atoms/userAtom";
 import { useNavigate } from "react-router-dom";
+interface user_Type {
+    username:string,
+    email:string,
+    password:string
+}
 type SignupResponse = {
   user: user_Type;
 };
