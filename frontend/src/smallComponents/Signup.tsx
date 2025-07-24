@@ -12,13 +12,14 @@ export const Signup = () => {
 
   const [login, setLogin] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUser({
-      ...user,
-      [name]: value,
-    });
-  };
+ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  if (!user) return;
+  setUser({
+    ...user,
+    [name]: value,
+  });
+};
 
   useEffect(() => {
     axios
@@ -29,16 +30,20 @@ export const Signup = () => {
       );
   }, []);
 
-  const handleSigninChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSigninUser({
-      ...signinUser,
-      [name]: value,
-    });
-  };
+ 
+const handleSigninChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  if (!signinUser) return;
+  setSigninUser({
+    ...signinUser,
+    [name]: value,
+  });
+};
+
 
   const handleCreateAccount = async () => {
     try {
+      if (!user) return; 
       const response = await axios.post(
         "https://chessgame-backend-3y0j.onrender.com/signup",
         {
