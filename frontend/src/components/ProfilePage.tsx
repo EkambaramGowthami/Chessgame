@@ -12,11 +12,17 @@ const axiosInstance = axios.create({
 type User = {
   username: string;
   email: string;
-  password:string;
+  password: string;
+};
+
+const EMPTY_USER: User = {
+  username: "",
+  email: "",
+  password: "",
 };
 
 export const ProfilePage = () => {
-  const [user, setUser] = useState<User | null>(null); 
+  const [user, setUser] = useState<User>(EMPTY_USER);
   const setAuthUser = useSetRecoilState(userAtom); 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
