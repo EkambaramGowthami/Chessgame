@@ -18,7 +18,8 @@ type SigninType = {
 export const Signup = () => {
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState<UserType | null>(userAtom);
-  const [signinuser, setSigninUser] = useRecoilState<SigninType | null>(signinAtom);
+const [signinuser, setSigninUser] = useRecoilState<SigninType | null>(signinAtom);
+
   const [login, setLogin] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
