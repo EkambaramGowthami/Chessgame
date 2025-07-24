@@ -23,7 +23,7 @@ type MoveEventPayload = {
   draw: boolean;
 };
 export const ChessComponent = () => {
-  const sidebarRef = useRef(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
   const [menu, setMenu] = useState(false);
   const [openRoom, setOpenRoom] = useState(false);
   const [positions, setPositions] = useState(false);
