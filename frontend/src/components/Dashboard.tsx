@@ -14,8 +14,8 @@ export const Dashboard = () => {
     const navigate = useNavigate();
     const authUser = useRecoilValue(authUserAtom);
     const [profileClick, setProfileClick] = useState(false);
-    const secondPageRef = useRef(null);
-    const handleSignup = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const sectionRef = useRef<HTMLDivElement>(null);
+     const handleSignup = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         navigate("/chessgame/signup");
     }
