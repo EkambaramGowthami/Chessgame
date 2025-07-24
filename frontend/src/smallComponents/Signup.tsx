@@ -59,7 +59,7 @@ export const Signup = () => {
           withCredentials: true,
         }
       );
-      const userData = (response.data as any).user;
+      
 
       setUser({ username: "", email: "", password: "" });
       navigate("/chessgame");
