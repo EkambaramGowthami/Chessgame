@@ -12,7 +12,7 @@ router.get("/google/callback",
         const token = jwt.sign({userId:user._id},process.env.JWT_SECRET!,{
             expiresIn:"7d"
         });
-        res.redirect(`http://localhost:5173/oauth-success?token${token}`);
+        res.redirect(`https://chessgame-the8thrank.onrender.com//oauth-success?token${token}`);
 
 
     }
