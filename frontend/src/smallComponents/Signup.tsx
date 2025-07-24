@@ -31,7 +31,7 @@ export const Signup = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/test-auth", { withCredentials: true })
+      .get("https://chessgame-backend-3y0j.onrender.com/test-auth", { withCredentials: true })
       .then((res) => console.log("Authenticated:", res.data))
       .catch((err) =>
         console.error("Auth failed:", (err as any).response?.data || err)
@@ -49,7 +49,7 @@ export const Signup = () => {
   const handleCreateAccount = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/signup",
+        "https://chessgame-backend-3y0j.onrender.com/signup",
         {
           username: user.username,
           email: user.email,
@@ -74,7 +74,7 @@ export const Signup = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/signin",
+        "https://chessgame-backend-3y0j.onrender.com/signin",
         {
           usernameOremail: signinuser.userOremail,
           password: signinuser.password,
