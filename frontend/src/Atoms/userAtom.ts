@@ -9,7 +9,7 @@ export interface signin_Type {
     password:string
 }
 
-export const userAtom = atom<user_Type>({
+export const userAtom = atom<user_Type | null>({
     key:"userAtom",
     default:{
         username:"",
@@ -17,14 +17,14 @@ export const userAtom = atom<user_Type>({
         password:""
     }
 });
-export const signinAtom = atom<signin_Type>({
+export const signinAtom = atom<signin_Type | null>({
     key:"signiAtom",
     default:{
         userOremail:"",
         password:""
     }
 });
-export const authUserAtom = atom<user_Type>({
+export const authUserAtom = atom<user_Type | null>({
     key: "authUserAtom",
     default: null, 
   });
