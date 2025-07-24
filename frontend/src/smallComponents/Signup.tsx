@@ -1,26 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { signinAtom, userAtom } from "../Atoms/userAtom"; 
+import { signinAtom, userAtom, authUserAtom } from "../Atoms/userAtom";
 import { useNavigate } from "react-router-dom";
-
-
 
 export const Signup = () => {
   const navigate = useNavigate();
- const [user, setUser] = useRecoilState(userAtom);
+  const [user, setUser] = useRecoilState(userAtom);
   const [signinUser, setSigninUser] = useRecoilState(signinAtom);
   const [, setAuthUser] = useRecoilState(authUserAtom); // nullable
-
 
   const [login, setLogin] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUser((prev) => ({
-      ...prev,
+    setUser({
+      ...user,
       [name]: value,
-    }));
+    });
   };
 
   useEffect(() => {
@@ -34,12 +31,11 @@ export const Signup = () => {
 
   const handleSigninChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setSigninUser((prev) => ({
-      ...prev,
+    setSigninUser({
+      ...signinUser,
       [name]: value,
-    }));
+    });
   };
-
 
   const handleCreateAccount = async () => {
     try {
@@ -54,10 +50,9 @@ export const Signup = () => {
           withCredentials: true,
         }
       );
-     setAuthUser(response.data.user);
+      setAuthUser(response.data.user);
       setUser({ username: "", email: "", password: "" });
       navigate("/chessgame");
-
       console.log("You are signed up", response.data);
     } catch (error) {
       const err = error as any;
@@ -70,20 +65,19 @@ export const Signup = () => {
       const response = await axios.post(
         "https://chessgame-backend-3y0j.onrender.com/signin",
         {
-          usernameOremail: signinuser.userOremail,
-          password: signinuser.password,
+          usernameOremail: signinUser.userOremail,
+          password: signinUser.password,
         },
         {
           withCredentials: true,
         }
       );
       const userData = (response.data as any).user;
-       setAuthUser(userData);
+      setAuthUser(userData);
       if (userData) {
         navigate("/chessgame");
         console.log("You are signed in", userData);
       }
-
       setSigninUser({ userOremail: "", password: "" });
       setLogin(false);
     } catch (error) {
@@ -104,16 +98,16 @@ export const Signup = () => {
             type="text"
             placeholder="Username Or Email"
             name="userOremail"
-            value={signinuser.userOremail}
+            value={signinUser.userOremail}
             onChange={handleSigninChange}
             className="px-12 py-2 rounded-lg text-black"
           />
           <label className="text-md">Password:</label>
           <input
             type="password"
-            placeholder="password"
+            placeholder="Password"
             name="password"
-            value={signinuser.password}
+            value={signinUser.password}
             onChange={handleSigninChange}
             className="px-12 py-2 rounded-lg text-black"
           />
