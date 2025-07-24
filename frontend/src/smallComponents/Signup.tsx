@@ -23,12 +23,16 @@ const [signinuser, setSigninUser] = useRecoilState<SigninType | null>(signinAtom
   const [login, setLogin] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUser((prev) => ({
+  const { name, value } = e.target;
+  setUser((prev) => {
+    if (!prev) return { username: "", email: "", password: "", [name]: value };
+    return {
       ...prev,
       [name]: value,
-    }));
-  };
+    };
+  });
+};
+
 
   useEffect(() => {
     axios
@@ -39,13 +43,17 @@ const [signinuser, setSigninUser] = useRecoilState<SigninType | null>(signinAtom
       );
   }, []);
 
-  const handleSigninChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSigninUser((prev) => ({
+ const handleSigninChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  setSigninUser((prev) => {
+    if (!prev) return { userOremail: "", password: "", [name]: value };
+    return {
       ...prev,
       [name]: value,
-    }));
-  };
+    };
+  });
+};
+
 
   const handleCreateAccount = async () => {
     try {
