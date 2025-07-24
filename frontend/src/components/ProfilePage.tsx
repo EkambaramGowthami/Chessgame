@@ -40,7 +40,7 @@ export const ProfilePage = () => {
       .catch((err) => {
         console.error("Error fetching profile:", err);
         setError("Failed to load profile. Please log in.");
-        setAuthUser(null);
+        setAuthUser(EMPTY_USER);
         setLoading(false);
       });
   }, []);
