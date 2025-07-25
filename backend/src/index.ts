@@ -15,10 +15,7 @@ import http from "http";
 import cors from "cors";
 import { VerityUser } from "./middlewares/VerifuUser";
 import cookieParser from "cookie-parser"; 
-const allowedOrigins = [
-  "http://localhost:5173",  
-  "https://chessgame-the8thrank.onrender.com" 
-];
+
 
 interface Room {
     chess : Chess,
@@ -48,15 +45,20 @@ interface ServerToClientEvents {
 }
 const app=express();
 const PORT = process.env.PORT || 3000;
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://chessgame-the8thrank.onrender.com"
+];
+
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, origin); 
+      callback(null, origin);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true
+  credentials: true,
 };
 app.use(express.json());
 app.use(cookieParser());
