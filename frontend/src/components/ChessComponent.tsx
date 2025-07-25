@@ -40,7 +40,7 @@ const [messages, setMessages] = useState<ChatMessage[]>([]);
   const dangerSound = useRef<HTMLAudioElement | null>(null);
   const [whiteMoves, setWhiteMove] = useState<string[]>([]);
   const [blackMoves, setBlackMove] = useState<string[]>([]);
-  const [socket] = useState<Socket>(() => io("https://chessgame-backend-3y0j.onrender.com"));
+  const [socket] = useState<Socket>(() => io("https://chessgame-backend-428c.onrender.com"));
   const [roomId, setRoomId] = useState<string | null>(null);
   const [inputRoomId, setInputRoomId] = useState<string>("");
   const [color, setColor] = useState<"white" | "black" | null>(null);
