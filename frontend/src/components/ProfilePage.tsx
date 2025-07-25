@@ -5,7 +5,7 @@ import axios from "axios";
 import { userAtom } from "../Atoms/userAtom";
 
 const axiosInstance = axios.create({
-  baseURL: "https://chessgame-backend-3y0j.onrender.com",
+  baseURL: "https://chessgame-backend-428c.onrender.com",
   withCredentials: true,
 });
 
