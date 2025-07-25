@@ -15,7 +15,7 @@ export const Signup = () => {
   const navigate = useNavigate();
   const [user, setUser] = useRecoilState(userAtom);
   const [signinUser, setSigninUser] = useRecoilState(signinAtom);
-  const [, setAuthUser] = useRecoilState(authUserAtom); // nullable
+  const [, setAuthUser] = useRecoilState(authUserAtom); 
 
   const [login, setLogin] = useState(false);
 
