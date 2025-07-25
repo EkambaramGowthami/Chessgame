@@ -231,7 +231,8 @@ app.use("/auth",router);
       res.cookie("authToken", token, {
         httpOnly: true,
         sameSite: "none", 
-        secure: true,   
+        secure: true,
+        path:"/"
       });
       console.log("Cookies received:", req.cookies);
       res.status(201).json({
