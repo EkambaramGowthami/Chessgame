@@ -49,15 +49,14 @@ interface ServerToClientEvents {
 const app=express();
 const PORT = process.env.PORT || 3000;
 const corsOptions = {
-  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
+  origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+      callback(null, origin); 
     } else {
-      console.error("CORS blocked origin:", origin);
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true,
+  credentials: true
 };
 app.use(express.json());
 app.use(cookieParser());
