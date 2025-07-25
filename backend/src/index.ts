@@ -15,7 +15,10 @@ import http from "http";
 import cors from "cors";
 import { VerityUser } from "./middlewares/VerifuUser";
 import cookieParser from "cookie-parser"; 
-
+const allowedOrigins = [
+  "http://localhost:5173",  
+  "https://chessgame-the8thrank.onrender.com" 
+];
 
 interface Room {
     chess : Chess,
@@ -45,22 +48,35 @@ interface ServerToClientEvents {
 }
 const app=express();
 const PORT = process.env.PORT || 3000;
-app.use(
-    cors({
-      origin: "https://chessgame-the8thrank.onrender.com",
-      credentials: true,
-    })
-  );
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error("CORS blocked origin:", origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
+app.options("*", cors());
 app.use(express.json());
 app.use(cookieParser());
 const server = http.createServer(app);
-const io = new Server<ClientToServerEvents,ServerToClientEvents>(server,{
-    cors:{
-        origin:"*",
-        methods:["GET","POST"],
-    }
-
-})
+const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
+  cors: {
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.error("Blocked socket origin:", origin);
+        callback(new Error("Not allowed by CORS (socket)"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST"]
+  }
+});
 const rooms:Record<string,Room> = {};
 io.on("connection",(socket:Socket<ClientToServerEvents,ServerToClientEvents>)=>{
     console.log("socket id :",socket.id);
@@ -201,7 +217,7 @@ app.get("/",(req,res)=>{
       
       res.cookie("authToken", token, {
         httpOnly: true,
-        sameSite: "lax", 
+        sameSite: "none", 
         secure: false,   
       });
       console.log("Cookies received:", req.cookies);
@@ -240,7 +256,7 @@ app.get("/",(req,res)=>{
   
       res.cookie("authToken", token, {
         httpOnly: true,
-        sameSite: "lax", 
+        sameSite: "none", 
         secure: false,   
       });
   
