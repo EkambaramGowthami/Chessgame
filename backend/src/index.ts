@@ -45,24 +45,21 @@ interface ServerToClientEvents {
 }
 const app=express();
 const PORT = process.env.PORT || 3000;
-// const allowedOrigins = [
-//   "https://chessgame-the8thrank.onrender.com"
-// ];
+const allowedOrigins = [
+  "https://chessgame-the8thrank.onrender.com",
+  "http://localhost:5173"
+];
 
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, origin);
-//     } else {
-//       callback(new Error("Not allowed by CORS"));
-//     }
-//   },
-//   credentials: true,
-// };
-app.use(cors({
-  origin: "https://chessgame-the8thrank.onrender.com",
-  credentials: true, 
-}));
+const corsOptions = {
+  origin: function (origin: any, callback: any) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
@@ -72,15 +69,9 @@ app.options("*", cors(corsOptions));
 const server = http.createServer(app);
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: {
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: allowedOrigins,
     credentials: true,
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST"],
   }
 });
 
