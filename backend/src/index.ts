@@ -185,13 +185,25 @@ io.on("connection",(socket:Socket<ClientToServerEvents,ServerToClientEvents>)=>{
 app.get("/",(req,res)=>{
     console.log("chess board is connected to backend");
  });
- app.use(
-    session({
-        secret:jwtSecret,
-        resave:false,
-        saveUninitialized:false
-    })
- );
+ // app.use(
+ //    session({
+ //        secret:jwtSecret,
+ //        resave:false,
+ //        saveUninitialized:false
+ //    })
+ // );
+app.use(
+  session({
+    secret: jwtSecret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: true,
+      sameSite: "none"
+    }
+  })
+);
+
  app.use(passport.initialize());
 app.use(passport.session());
 app.use("/auth",router);
