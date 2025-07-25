@@ -67,6 +67,7 @@ export const Dashboard = () => {
                         <div className="text-gray-200 font-medium space-x-2 text-center  md:text-left">
                             <span className="italic text-2xl">Stand</span><span className="italic text-2xl" >up</span><span className="text-[#367c2b] text-3xl italic font-semibold">Eight</span>
                         </div>
+                        <div className="text-2xl text-white font-medium rounded-xl p-2 bg-green-500">Let's Play</div>
 
                     </div>
 
