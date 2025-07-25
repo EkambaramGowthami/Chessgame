@@ -48,8 +48,8 @@ interface ServerToClientEvents {
 }
 const app=express();
 const PORT = process.env.PORT || 3000;
-app.use(cors({
-  origin: function (origin, callback) {
+const corsOptions = {
+  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -58,10 +58,13 @@ app.use(cors({
     }
   },
   credentials: true,
-}));
-app.options("*", cors());
+};
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
+
 const server = http.createServer(app);
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: {
@@ -69,14 +72,14 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        console.error("Blocked socket origin:", origin);
-        callback(new Error("Not allowed by CORS (socket)"));
+        callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
     methods: ["GET", "POST"]
   }
 });
+
 const rooms:Record<string,Room> = {};
 io.on("connection",(socket:Socket<ClientToServerEvents,ServerToClientEvents>)=>{
     console.log("socket id :",socket.id);
@@ -187,6 +190,16 @@ io.on("connection",(socket:Socket<ClientToServerEvents,ServerToClientEvents>)=>{
 app.get("/",(req,res)=>{
     console.log("chess board is connected to backend");
  });
+ app.use(
+    session({
+        secret:jwtSecret,
+        resave:false,
+        saveUninitialized:false
+    })
+ );
+ app.use(passport.initialize());
+app.use(passport.session());
+app.use("/auth",router);
  app.post("/signup", async (req:any, res:any) => {
     const { username, email, password } = req.body;
   
@@ -218,7 +231,7 @@ app.get("/",(req,res)=>{
       res.cookie("authToken", token, {
         httpOnly: true,
         sameSite: "none", 
-        secure: false,   
+        secure: true,   
       });
       console.log("Cookies received:", req.cookies);
       res.status(201).json({
@@ -257,7 +270,7 @@ app.get("/",(req,res)=>{
       res.cookie("authToken", token, {
         httpOnly: true,
         sameSite: "none", 
-        secure: false,   
+        secure: true,   
       });
   
       res.status(200).json({
@@ -285,16 +298,7 @@ app.get("/",(req,res)=>{
  app.get("/test-auth", VerityUser, (req, res) => {
     res.json({ message: "Authenticated", user: req.user });
   });
- app.use(
-    session({
-        secret:jwtSecret,
-        resave:false,
-        saveUninitialized:false
-    })
- );
- app.use(passport.initialize());
-app.use(passport.session());
-app.use("/auth",router);
+
 server.listen(PORT, '0.0.0.0', () => {
   console.log(` Server running on port ${PORT}`);
 });
