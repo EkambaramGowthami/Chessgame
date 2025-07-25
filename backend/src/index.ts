@@ -45,21 +45,12 @@ interface ServerToClientEvents {
 }
 const app=express();
 const PORT = process.env.PORT || 3000;
-const allowedOrigins = [
-  
-  "http://localhost:5173"
-];
-
+const allowedOrigins = ["https://chessgame-the8thrank.onrender.com"];
 const corsOptions = {
-  origin: function (origin: any, callback: any) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: allowedOrigins,
   credentials: true,
 };
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
@@ -72,7 +63,7 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
     origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST"],
-  }
+  },
 });
 
 const rooms:Record<string,Room> = {};
